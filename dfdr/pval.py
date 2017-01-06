@@ -176,5 +176,6 @@ def pval(data,labels,method, transform=None, alpha=0.1,numperm=1000):
 	#print('calculating BH fdr')
 	trep=np.tile(t[np.newaxis].transpose(),(1,numperm))
 	pvals=(np.sum(u>=trep,axis=1)+1)/(numperm+1)
-	# plt.figure()
-	# plt.hist(pvals,50)
+	#plt.figure()
+	#plt.hist(pvals,50)
+	return pvals
