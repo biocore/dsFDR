@@ -13,12 +13,12 @@ def rankdata(data):
 		rdata[crow,:]=sp.stats.rankdata(data[crow,:])
 	return rdata
 
-def logdata(data):
+def log2data(data):
 	data[data < 2] = 2
 	data = np.log2(data)
 	return data
 
-def apdata(data):
+def binarydata(data):
 	data[data != 0] = 1
 	return data
 
@@ -71,10 +71,10 @@ def pfdr(data,labels, method, transform=None, alpha=0.1,numperm=1000, fdrbefast=
 
 	if transform == 'rankdata':
 		data = rankdata(data)
-	elif transform == 'logdata':
-		data = logdata(data)
-	elif transform == 'apdata':
-		data = apdata(data) 
+	elif transform == 'log2data':
+		data = log2data(data)
+	elif transform == 'binarydata':
+		data = binarydata(data) 
 	elif transform == 'normdata':
 		data = normdata(data) 	 
 

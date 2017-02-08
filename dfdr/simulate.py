@@ -102,7 +102,7 @@ def simulatemix2(numsamples=5,numdiff=100,numc=100,numd=800,sigma=0.1,numreads=1
 	#B = np.zeros([int(numdiff/2), 2*numsamples])
 	for i in range(int(numdiff)):
 		mu_H = np.random.uniform(0.1,1)
-		mu_S = np.random.uniform(0.1,1)
+		mu_S = np.random.uniform(0.1,1) # change the value to make two groups really different
 		h = np.random.normal(mu_H, sigma, numsamples)
 		s = np.random.normal(mu_S, sigma, numsamples)
 		# zero inflation

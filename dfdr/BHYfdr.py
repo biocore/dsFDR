@@ -18,7 +18,7 @@ def logdata(data):
 	data = np.log2(data)
 	return data
 
-def apdata(data):
+def binarydata(data):
 	data[data != 0] = 1
 	return data
 
@@ -86,10 +86,10 @@ def BHfdr(data,labels,method, transform=None, alpha=0.1,numperm=1000):
 
 	if transform == 'rankdata':
 		data = rankdata(data)
-	elif transform == 'logdata':
-		data = logdata(data)
-	elif transform == 'apdata':
-		data = apdata(data)  
+	elif transform == 'log2data':
+		data = log2data(data)
+	elif transform == 'binarydata':
+		data = binarydata(data)  
 	elif transform == 'normdata':
 		data = normdata(data)   
 
@@ -187,10 +187,10 @@ def BHfdr2(data,labels,method, transform=None, alpha=0.1,numperm=1000):
 
 	if transform == 'rankdata':
 		data = rankdata(data)
-	elif transform == 'logdata':
-		data = logdata(data)
-	elif transform == 'apdata':
-		data = apdata(data)  
+	elif transform == 'log2data':
+		data = log2data(data)
+	elif transform == 'binarydata':
+		data = binarydata(data)  
 	elif transform == 'normdata':
 		data = normdata(data)   
 
@@ -295,10 +295,10 @@ def BYfdr(data,labels,method, transform=None, alpha=0.1,numperm=1000):
 
 	if transform == 'rankdata':
 		data = rankdata(data)
-	elif transform == 'logdata':
-		data = logdata(data)
-	elif transform == 'apdata':
-		data = apdata(data)  
+	elif transform == 'log2data':
+		data = log2data(data)
+	elif transform == 'binarydata':
+		data = binarydata(data)  
 	elif transform == 'normdata':
 		data = normdata(data)   
 
@@ -395,10 +395,10 @@ def BRfwer(data,labels,method, transform=None, alpha=0.1,numperm=1000):
 
 	if transform == 'rankdata':
 		data = rankdata(data)
-	elif transform == 'logdata':
-		data = logdata(data)
-	elif transform == 'apdata':
-		data = apdata(data)  
+	elif transform == 'log2data':
+		data = log2data(data)
+	elif transform == 'binarydata':
+		data = binarydata(data)  
 	elif transform == 'normdata':
 		data = normdata(data)   
 
