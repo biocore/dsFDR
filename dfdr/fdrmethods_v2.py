@@ -2,6 +2,7 @@
 # take away abs in calculating test statistics
 # calculate pvalues for dsfdr
 # pvalue calculation for bh and by fdr
+# add filtered BH method
 
 import numpy as np
 import scipy as sp
@@ -275,5 +276,13 @@ def dsfdr(data,labels, method='meandiff', transform='rankdata', alpha=0.1, numpe
 		t_star = np.array([t, ] * numperm).transpose()
 		pvals=(np.sum(u>=t_star,axis=1)+1)/(numperm+1)
 		reject=statsmodels.sandbox.stats.multicomp.multipletests(pvals,alpha=alpha,method='fdr_by')[0]
+
+	#elif fdrmethod=='filterBH': # only apply to 'rankdata' now
+	#	pvals_min=np.zeros([numbact]) # minimal achievable p-values for each test
+	#	for crow in range(numbact):
+			#allstat=np.hstack([t[crow],u[crow,:]])
+	#		n0=np.sum(labels==0)
+	#		n1=np.sum(labels==1)
+	#		pvals_[crow]=  
 
 	return reject, tstat, pvals
