@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 def meandiff(data, labels):
 	mean0 = np.mean(data[:, labels==0], axis = 1)
 	mean1 = np.mean(data[:, labels==1], axis = 1)
-	tstat = abs(mean1 - mean0)
+	tstat = mean1 - mean0
 	return tstat	
 
 
@@ -20,7 +20,7 @@ def stdmeandiff(data, labels):
 	mean1 = np.mean(data[:, labels==1], axis = 1)
 	sd0 = np.std(data[:, labels==0], axis = 1, ddof = 1)
 	sd1 = np.std(data[:, labels==1], axis = 1, ddof = 1)
-	tstat = abs(mean1 - mean0)/(sd1 + sd0) 
+	tstat = (mean1 - mean0)/(sd1 + sd0) 
 	return tstat
 
 
@@ -31,8 +31,6 @@ def mannwhitney(data, labels):
 		group1[i, :]).statistic for i in range(np.shape(data)[0])])
 	return tstat    
 
-
-# kruwallis give a column vector while others give row vector
 def kruwallis(data, labels):  
 	n = len(np.unique(labels))
 	allt=[]

@@ -6,10 +6,6 @@ import numpy.testing as npt
 import fdrmethods_v2
 import simulation_v2
 
-# cd dfdr
-# source activate python3
-# run nosetests in shell
-# npt.almost equal (round to 1 if bigger than 0.5)
 
 class FDRmethodsTests(TestCase):
     def setUp(self):

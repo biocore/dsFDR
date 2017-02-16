@@ -5,9 +5,6 @@ import numpy.testing as npt
 
 import statistics
 
-# cd dfdr
-#run nosetests in shell
-# npt.almost equal (round to 1 if bigger than 0.5)
 
 class StatisticsTests(TestCase):
     def setUp(self):
@@ -24,16 +21,16 @@ class StatisticsTests(TestCase):
     def test_meandiff(self):
         res = statistics.meandiff(self.data, self.labels)
         self.assertEqual(len(res), self.data.shape[0])
-        self.assertEqual(res[0], 30.25)
+        self.assertEqual(res[0], -30.25)
         self.assertEqual(res[1], 0)
-        self.assertEqual(res[2], 0.75)
+        self.assertEqual(res[2], -0.75)
 
     def test_stdmeandiff(self):
         res = statistics.stdmeandiff(self.data, self.labels)
         self.assertEqual(len(res), self.data.shape[0])  
-        npt.assert_almost_equal(res[0],1.57,decimal=2)
+        npt.assert_almost_equal(res[0],-1.57,decimal=2)
         self.assertEqual(res[1], 0)
-        npt.assert_almost_equal(res[2],0.39,decimal=2)
+        npt.assert_almost_equal(res[2],-0.39,decimal=2)
 
     def test_mannwhitney(self):
         res = statistics.mannwhitney(self.data, self.labels)
