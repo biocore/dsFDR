@@ -1,0 +1,7 @@
+numpy
+scipy
+statsmodels
+matplotlib
+scikit-bio
+sphinx
+
