@@ -1,7 +1,7 @@
 from unittest import TestCase, main
 
 import numpy as np
-import transform
+from dsfdr import transform
 
 
 class TransformTests(TestCase):

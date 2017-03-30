@@ -1,8 +1,8 @@
 from unittest import TestCase, main
 
 import numpy as np
-import dsfdr
-import simulation
+from dsfdr import dsfdr
+from dsfdr import simulation
 
 
 class fdr_methodsTests(TestCase):
