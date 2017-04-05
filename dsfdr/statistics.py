@@ -107,6 +107,9 @@ def kruwallis(data, labels):
     return allt
 
 
+# chi-square test (for Justine)
+
+
 # pearson correlation
 def _sum_of_squares(a, axis=0):
     a, axis = _chk_asarray(a, axis)
