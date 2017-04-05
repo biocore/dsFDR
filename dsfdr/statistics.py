@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.stats
 from scipy.stats import rankdata
 
 
@@ -144,7 +143,3 @@ def spearman(data, labels):
     tstat = np.array([spearmanR(data[i, :], labels)
                       for i in range(np.shape(data)[0])])
     return tstat
-
-
-
-
