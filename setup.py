@@ -23,7 +23,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 
-setup(name='dsFDR',
+setup(name='dsfdr',
       version=dsfdr.__version__,
       license='BSD',
       description=description,
