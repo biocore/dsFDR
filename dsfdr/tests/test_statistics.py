@@ -7,7 +7,7 @@ from dsfdr import statistics
 
 class StatisticsTests(TestCase):
 
-    def setUp(self):
+    def setUp(self):s
         self.labels = np.array([1, 1, 1, 1, 0, 0, 0, 0])
         self.data = np.array([[0, 1, 3, 5, 10, 30, 40, 50],
                               [1, 2, 3, 4, 4, 3, 2, 1],
