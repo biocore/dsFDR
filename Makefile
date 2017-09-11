@@ -18,4 +18,4 @@ test:
 pep8:
 	flake8 *.py
 
-all: test pep8 html
+all: test pep8
