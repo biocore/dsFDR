@@ -10,7 +10,7 @@ class TestBalanceSimulation(unittest.TestCase):
         data, labels, balances, tree = simulatedatbalance(
             numsamples=5, numdiff=4, numc=2, numd=3,
             sigma=0.1, numreads=100)
-
+        print(data)
 
 if __name__ == "__main__":
     unittest.main()

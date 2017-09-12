@@ -1,13 +1,12 @@
 import numpy as np
 from gneiss.cluster import random_linkage
-import itertools
 from gneiss.balances import balance_basis
 from skbio.stats.composition import ilr
 import pandas as pd
 
 
 def simulatedatbalance(numsamples=5, numdiff=100, numc=100, numd=800,
-                       sigma=0.1, normalize=False, numreads=10000,
+                       sigma=0.1, numreads=10000,
                        pseudo=0.0001):
     """ Generates simulation with tree and balances
 
@@ -39,7 +38,6 @@ def simulatedatbalance(numsamples=5, numdiff=100, numc=100, numd=800,
                                numc=numc,
                                numd=numd,
                                sigma=sigma,
-                               normalize=normalize,
                                numreads=numreads)
     n = data.shape[0]
     tree = random_linkage(n)
@@ -79,7 +77,7 @@ def simulatedatbalance(numsamples=5, numdiff=100, numc=100, numd=800,
 
 
 def simulatedat(numsamples=5, numdiff=100, numc=100, numd=800,
-                sigma=0.1, normalize=False, numreads=10000):
+                sigma=0.1, numreads=10000):
     '''
     new simulation code
 
@@ -126,9 +124,16 @@ def simulatedat(numsamples=5, numdiff=100, numc=100, numd=800,
 
     data = np.vstack((A, C, D))
 
-    if normalize is True:
-        data = data / np.sum(data, axis=0)
-        # normalize by column
+
+    data = data / np.sum(data, axis=0)
+
+
+    _data = []
+    for i in range(data.shape[1]):
+        _data.append(
+            np.random.multinomial(numreads, data[:, i])
+        )
+    data = np.vstack(_data).T
 
     # labels
     x = np.array([0, 1])
