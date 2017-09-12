@@ -4,4 +4,4 @@ statsmodels
 matplotlib
 scikit-bio
 sphinx
-
+flake8

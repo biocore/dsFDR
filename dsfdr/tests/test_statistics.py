@@ -2,7 +2,7 @@ from unittest import TestCase, main
 
 import numpy as np
 import numpy.testing as npt
-import statistics
+from dsfdr import statistics
 
 
 class StatisticsTests(TestCase):

@@ -17,7 +17,5 @@ test:
 	$(TEST_COMMAND)
 pep8:
 	flake8 *.py
-html:
-	make -C doc clean html
 
-all: test pep8 html
+all: test pep8

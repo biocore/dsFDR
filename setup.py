@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import find_packages, setup
 import dsfdr
 
 
@@ -23,7 +23,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 
-setup(name='dsFDR',
+setup(name='dsfdr',
       version=dsfdr.__version__,
       license='BSD',
       description=description,
@@ -31,6 +31,7 @@ setup(name='dsFDR',
       classifiers=classifiers,
       keywords='statistics FDR',
       author="",
+      packages=find_packages(),
       author_email="",
       maintainer_email="",
       url='http://github.com/biocore/dsFDR',
