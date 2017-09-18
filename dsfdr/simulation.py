@@ -5,7 +5,6 @@ def simulatedat(numsamples=5, numdiff=100, numc=100, numd=800,
                 sigma=0.1, normalize=False, numreads=10000):
     '''
     new simulation code
-
     input:
     numsamples : int
         number of samples in each group
