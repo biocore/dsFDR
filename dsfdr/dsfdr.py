@@ -3,6 +3,7 @@ import scipy as sp
 import types
 from statsmodels.sandbox.stats.multicomp import multipletests
 from scipy.special import comb
+import scipy.stats
 
 from . import transform
 from . import statistics
@@ -56,7 +57,8 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
         'dsfdr' : discrete FDR method
         'bhfdr' : Benjamini-Hochberg FDR method
         'byfdr' : Benjamini-Yekutielli FDR method
-        'filterBH' : Benjamini-Hochberg FDR method with filtering
+        'filterBH' : Benjamini-Hochberg FDR method with minimal information pre-filtering
+        'gilbertBH' : Benjamini-Hochberg FDR method with Gilbert (2005) pre-filtering
 
     output:
     reject : np array of bool (length N)
@@ -85,6 +87,27 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             else:
                 index.append(i)
         data = data[index, :]
+    elif fdr_method == 'gilbert':
+        # caluclate the Gilbert alpha* per feature (minimal ibtainable p-value)
+        alpha_star = []
+        n0 = np.sum(labels == 0)
+        n1 = np.sum(labels == 1)
+        for i in range(np.shape(data)[0]):
+            cdat = np.sort(data[i,:])
+            # s1, p1 = scipy.stats.mannwhitneyu(cdat[:n0],cdat[n0:])
+            # s2, p2 = scipy.stats.mannwhitneyu(cdat[:n1],cdat[n1:])
+            s1, p1 = scipy.stats.kruskal(cdat[:n0],cdat[n0:])
+            s2, p2 = scipy.stats.kruskal(cdat[:n1],cdat[n1:])
+            alpha_star.append(np.min([p1,p2]))
+        # find the smallest K which is big enough for Bonferoni (that's how it's done in Gilbert)
+        alpha_star = np.array(alpha_star)
+        for ck in np.arange(1,np.shape(data)[0]+1):
+            num_ok = np.sum(alpha_star < alpha / ck)
+            if num_ok <= ck:
+                break
+        # and keep only the features which match it
+        data = data[(alpha_star < alpha / ck), :]
+
 
     # transform the data
     if transform_type == 'rankdata':
@@ -243,7 +266,7 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
         reject = np.zeros(numbact, dtype=int)
         reject = (pvals <= realcp)
 
-    elif fdr_method == 'bhfdr' or fdr_method == 'filterBH':
+    elif fdr_method == 'bhfdr' or fdr_method == 'filterBH' or fdr_method == 'gilbert':
         t_star = np.array([t, ] * numperm).transpose()
         pvals = (np.sum(u >= t_star, axis=1) + 1) / (numperm + 1)
         reject = multipletests(pvals, alpha=alpha, method='fdr_bh')[0]
