@@ -93,6 +93,10 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
         n0 = np.sum(labels == 0)
         n1 = np.sum(labels == 1)
         for i in range(np.shape(data)[0]):
+            # test if all values are identical, max p-val is 1 (need to filter)
+            if len(np.unique(data[i,:]))==1:
+                alpha_star.append(1)
+                continue
             cdat = np.sort(data[i,:])
             # s1, p1 = scipy.stats.mannwhitneyu(cdat[:n0],cdat[n0:])
             # s2, p2 = scipy.stats.mannwhitneyu(cdat[:n1],cdat[n1:])
