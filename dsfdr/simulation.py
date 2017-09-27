@@ -1,8 +1,83 @@
 import numpy as np
+from gneiss.cluster import random_linkage
+from gneiss.balances import balance_basis
+from skbio.stats.composition import ilr
+import pandas as pd
+
+
+def simulatedatbalance(numsamples=5, numdiff=100, numc=100, numd=800,
+                       sigma=0.1, numreads=10000,
+                       pseudo=0.0001):
+    """ Generates simulation with tree and balances
+
+    input:
+    numsamples : int
+        number of samples in each group
+    numdiff : int
+        number of different bacteria between the groups
+    numc : int
+        number of high freq. bacteria similar between the groups
+    numd : int
+        number of low freq. bacteria similar between the groups
+    sigma : float
+        the standard deviation
+
+    output:
+    data
+        the underlying simulated data
+    labels
+        metadata category labels
+    balances,
+        the ground truth balances
+    tree
+        the ground truth tree
+    """
+
+    data, labels = simulatedat(numsamples=numsamples,
+                               numdiff=numdiff,
+                               numc=numc,
+                               numd=numd,
+                               sigma=sigma,
+                               numreads=numreads)
+    n = data.shape[0]
+    tree = random_linkage(n)
+    group1 = np.arange(0, numdiff // 2)
+    group2 = np.arange(numdiff // 2, numdiff)
+    group3 = np.arange(numdiff, numdiff+numc+numd)
+    balances = []
+    for i in group1:
+        for j in group2:
+            if j > i:
+                ti, tj = tree.find(str(i)), tree.find(str(j))
+                lca = tree.lowest_common_ancestor([ti, tj])
+                balances.append(lca.name)
+
+    for i in group1:
+        for j in group3:
+            if j > i:
+                ti, tj = tree.find(str(i)), tree.find(str(j))
+                lca = tree.lowest_common_ancestor([ti, tj])
+                balances.append(lca.name)
+
+
+    for i in group2:
+        for j in group3:
+            if j > i:
+                ti, tj = tree.find(str(i)), tree.find(str(j))
+                lca = tree.lowest_common_ancestor([ti, tj])
+                balances.append(lca.name)
+
+    balances = list(set(balances))
+    basis, _ = balance_basis(tree)
+    data = ilr(data.T+pseudo, basis).T
+    data = pd.DataFrame(data,
+                        index=[n.name for n in tree.levelorder()
+                               if not n.is_tip()])
+    return data, labels, balances, tree
 
 
 def simulatedat(numsamples=5, numdiff=100, numc=100, numd=800,
-                sigma=0.1, normalize=False, numreads=10000):
+                sigma=0.1, numreads=10000):
     '''
     new simulation code
     input:
@@ -48,9 +123,16 @@ def simulatedat(numsamples=5, numdiff=100, numc=100, numd=800,
 
     data = np.vstack((A, C, D))
 
-    if normalize is True:
-        data = data / np.sum(data, axis=0)
-        # normalize by column
+
+    data = data / np.sum(data, axis=0)
+
+
+    _data = []
+    for i in range(data.shape[1]):
+        _data.append(
+            np.random.multinomial(numreads, data[:, i])
+        )
+    data = np.vstack(_data).T
 
     # labels
     x = np.array([0, 1])
