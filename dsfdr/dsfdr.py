@@ -91,7 +91,7 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
                 index.append(i)
         data = data[index, :]
         filtered_order = filtered_order[index]
-    elif fdr_method == 'gilbert':
+    elif fdr_method == 'gilbertBH':
         # caluclate the Gilbert alpha* per feature (minimal ibtainable p-value)
         alpha_star = []
         n0 = np.sum(labels == 0)
@@ -270,7 +270,7 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             reject = np.zeros(numbact, dtype=int)
             reject = (pvals <= realcp)
 
-    elif fdr_method == 'bhfdr' or fdr_method == 'filterBH' or fdr_method == 'gilbert':
+    elif fdr_method == 'bhfdr' or fdr_method == 'filterBH' or fdr_method == 'gilbertBH':
         t_star = np.array([t, ] * numperm).transpose()
         pvals = (np.sum(u >= t_star, axis=1) + 1) / (numperm + 1)
         reject = multipletests(pvals, alpha=alpha, method='fdr_bh')[0]
