@@ -68,6 +68,9 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
     '''
 
     data = data.copy()
+    # remember the original bacteria to take care of pre-filtering
+    orig_numbact = np.shape(data)[0]
+    filtered_order = np.arange(orig_numbact)
 
     if fdr_method == 'filterBH':
         index = []
@@ -85,6 +88,7 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             else:
                 index.append(i)
         data = data[index, :]
+        filtered_order = filtered_order[index]
 
     # transform the data
     if transform_type == 'rankdata':
@@ -101,10 +105,6 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             pass
     else:
         raise ValueError('transform type %s not supported' % transform_type)
-
-    numbact = np.shape(data)[0]
-
-    labels = labels.copy()
 
     numbact = np.shape(data)[0]
     labels = labels.copy()
@@ -237,11 +237,10 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
         if not foundit:
             # no good threshold was found
             reject = np.repeat([False], numbact)
-            return reject, tstat, pvals
-
-        # fill the reject null hypothesis
-        reject = np.zeros(numbact, dtype=int)
-        reject = (pvals <= realcp)
+        else:
+            # fill the reject null hypothesis
+            reject = np.zeros(numbact, dtype=int)
+            reject = (pvals <= realcp)
 
     elif fdr_method == 'bhfdr' or fdr_method == 'filterBH':
         t_star = np.array([t, ] * numperm).transpose()
@@ -256,4 +255,12 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
     else:
         raise ValueError('fdr method %s not supported' % fdr_method)
 
-    return reject, tstat, pvals
+    # fix the returned data for the filtered bacteria
+    ret_reject = np.repeat([False], orig_numbact)
+    ret_pvals = np.ones(orig_numbact)
+    ret_tstat = np.full(orig_numbact, np.nan)
+
+    ret_reject[filtered_order] = reject
+    ret_pvals[filtered_order] = pvals
+    ret_tstat[filtered_order] = tstat
+    return ret_reject, ret_tstat, ret_pvals
