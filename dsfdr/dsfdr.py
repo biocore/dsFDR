@@ -91,7 +91,6 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
                 index.append(i)
         data = data[index, :]
         filtered_order = filtered_order[index]
-
     elif fdr_method == 'gilbertBH':
         # caluclate the Gilbert alpha* per feature (minimal ibtainable p-value)
         alpha_star = []
@@ -135,10 +134,6 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             pass
     else:
         raise ValueError('transform type %s not supported' % transform_type)
-
-    numbact = np.shape(data)[0]
-
-    labels = labels.copy()
 
     numbact = np.shape(data)[0]
     labels = labels.copy()
@@ -275,7 +270,6 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             # fill the reject null hypothesis
             reject = np.zeros(numbact, dtype=int)
             reject = (pvals <= realcp)
-
     elif fdr_method == 'bhfdr' or fdr_method == \
                        'filterBH' or fdr_method == 'gilbertBH':
         t_star = np.array([t, ] * numperm).transpose()
