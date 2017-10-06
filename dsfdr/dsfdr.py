@@ -5,8 +5,8 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 from scipy.special import comb
 import scipy.stats
 
-import transform
-import statistics
+from . import transform
+from . import statistics
 
 
 # new fdr method
