@@ -107,8 +107,7 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             rdat = np.sort(data[i,:])[::-1] # sort in decending order
 
             s1, p1 = scipy.stats.kruskal(cdat[:n0],cdat[n0:])
-            #s2, p2 = scipy.stats.kruskal(rdat[:n0],rdat[n0:])
-            s2, p2 = scipy.stats.kruskal(cdat[:n1],cdat[n1:])
+            s2, p2 = scipy.stats.kruskal(rdat[:n0],rdat[n0:])
 
             alpha_star.append(np.min([p1,p2]))
         # find the smallest K which is big enough for Bonferoni (that's how it's done in Gilbert)
