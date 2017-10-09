@@ -146,10 +146,6 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
         raise ValueError('transform type %s not supported' % transform_type)
 
     numbact = np.shape(data)[0]
-
-    labels = labels.copy()
-
-    numbact = np.shape(data)[0]
     labels = labels.copy()
 
     if method == 'meandiff':
