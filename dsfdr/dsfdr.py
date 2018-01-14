@@ -130,15 +130,15 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             sys.exit()
 
     # transform the data
-    if transform_type == 'rankdata':
+    if transform_type == 'rank':
         data = transform.rankdata(data)
-    elif transform_type == 'log2data':
+    elif transform_type == 'log':
         data = transform.log2data(data)
-    elif transform_type == 'binarydata':
+    elif transform_type == 'binary':
         data = transform.binarydata(data)
-    elif transform_type == 'normdata':
+    elif transform_type == 'norm':
         data = transform.normdata(data)
-    elif transform_type == 'clrdata':
+    elif transform_type == 'clr':
         data = transform.clrdata(data)
     elif transform_type is None:
             pass
