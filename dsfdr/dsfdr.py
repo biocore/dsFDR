@@ -4,6 +4,7 @@ import types
 from statsmodels.sandbox.stats.multicomp import multipletests
 from scipy.special import comb
 import scipy.stats
+import sys
 
 from . import transform
 from . import statistics
@@ -91,6 +92,7 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
                 index.append(i)
         data = data[index, :]
         filtered_order = filtered_order[index]
+
     elif fdr_method == 'gilbertBH':
         # caluclate the Gilbert alpha* per feature (minimal ibtainable p-value)
         alpha_star = []
@@ -119,16 +121,24 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
         data = data[index, :]
         filtered_order = filtered_order[index]
 
+        # if all hypotheses are filtered out by Gilbert method
+        if data.shape[0] == 0:
+            ret_reject = np.repeat([False], orig_numbact)
+            ret_pvals = np.ones(orig_numbact)
+            ret_tstat = np.full(orig_numbact, np.nan)
+            return ret_reject, ret_tstat, ret_pvals
+            sys.exit()
+
     # transform the data
-    if transform_type == 'rankdata':
+    if transform_type == 'rank':
         data = transform.rankdata(data)
-    elif transform_type == 'log2data':
+    elif transform_type == 'log':
         data = transform.log2data(data)
-    elif transform_type == 'binarydata':
+    elif transform_type == 'binary':
         data = transform.binarydata(data)
-    elif transform_type == 'normdata':
+    elif transform_type == 'norm':
         data = transform.normdata(data)
-    elif transform_type == 'clrdata':
+    elif transform_type == 'clr':
         data = transform.clrdata(data)
     elif transform_type is None:
             pass
@@ -270,11 +280,13 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             # fill the reject null hypothesis
             reject = np.zeros(numbact, dtype=int)
             reject = (pvals <= realcp)
+
     elif fdr_method == 'bhfdr' or fdr_method == \
-                       'filterBH' or fdr_method == 'gilbertBH':
+                       'filterBH' or fdr_method == 'gilbertBH':            
         t_star = np.array([t, ] * numperm).transpose()
         pvals = (np.sum(u >= t_star, axis=1) + 1) / (numperm + 1)
         reject = multipletests(pvals, alpha=alpha, method='fdr_bh')[0]
+
 
     elif fdr_method == 'byfdr':
         t_star = np.array([t, ] * numperm).transpose()

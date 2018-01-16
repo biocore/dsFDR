@@ -7,7 +7,7 @@ Install
 =======
 Create a [conda](http://conda.pydata.org/docs/install/quick.html) environment for calour:
 ```
-conda create -n dsfdr python=3.5 numpy scipy jupyter scikit-learn statsmodels
+conda create -n dsfdr python=3.5 numpy scipy jupyter scikit-learn scikit-bio statsmodels
 ```
 
 and activate it using:
