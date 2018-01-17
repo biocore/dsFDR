@@ -5,9 +5,14 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 from scipy.special import comb
 import scipy.stats
 import sys
+from logging import getLogger, basicConfig
 
 from . import transform
 from . import statistics
+
+
+logger = getLogger(__name__)
+basicConfig(format='%(levelname)s:%(message)s')
 
 
 # new fdr method
@@ -73,6 +78,7 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
     data = data.copy()
     # remember the original bacteria to take care of pre-filtering
     orig_numbact = np.shape(data)[0]
+    logger.debug('Processing %d features' % orig_numbact)
     filtered_order = np.arange(orig_numbact)
 
     if fdr_method == 'filterBH':
@@ -103,8 +109,10 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             if len(np.unique(data[i,:]))==1:
                 alpha_star.append(1)
                 continue
-            cdat = np.sort(data[i,:]) # sort in acending order
-            rdat = np.sort(data[i,:])[::-1] # sort in decending order
+            # sort in acending order
+            cdat = np.sort(data[i,:])
+            # sort in decending order
+            rdat = np.sort(data[i,:])[::-1]
 
             s1, p1 = scipy.stats.kruskal(cdat[:n0],cdat[n0:])
             s2, p2 = scipy.stats.kruskal(rdat[:n0],rdat[n0:])
@@ -148,7 +156,11 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
     numbact = np.shape(data)[0]
     labels = labels.copy()
 
+    logger.debug('%d samples in group1' % np.sum(labels==0))
+    logger.debug('%d samples in group2' % np.sum(labels==1))
+
     if method == 'meandiff':
+        logger.debug('Using statistic meandiff')
         # fast matrix multiplication based calculation
         method = statistics.meandiff
         tstat = method(data, labels)
@@ -169,11 +181,14 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
     elif method == 'mannwhitney' or method == \
                    'kruwallis' or method == 'stdmeandiff':
         if method == 'mannwhitney':
+            logger.debug('Using statistic mannwhitney')
             method = statistics.mannwhitney
         if method == 'kruwallis':
+            logger.debug('Using statistic kruwallis')
             method = statistics.kruwallis
         if method == 'stdmeandiff':
             method = statistics.stdmeandiff
+            logger.debug('Using statistic stdmeandiff')
 
         tstat = method(data, labels)
         t = np.abs(tstat)
@@ -186,8 +201,11 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
     elif method == 'spearman' or method == 'pearson':
         # fast matrix multiplication based correlation
         if method == 'spearman':
+            logger.debug('Using statistic spearman')
             data = transform.rankdata(data)
             labels = sp.stats.rankdata(labels)
+        else:
+            logger.debug('Using statistic pearson')
         meanval = np.mean(data, axis=1).reshape([data.shape[0], 1])
         data = data - np.repeat(meanval, data.shape[1], axis=1)
         labels = labels - np.mean(labels)
@@ -208,8 +226,11 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             label_nonzero = labels[index]
             sample_nonzero = data[i, :][index]
             if method == 'nonzerospearman':
+                logger.debug('Using statistic nonzerospearman')
                 sample_nonzero = sp.stats.rankdata(sample_nonzero)
                 label_nonzero = sp.stats.rankdata(label_nonzero)
+            else:
+                logger.debug('Using statistic nonzeropearson')
             sample_nonzero = sample_nonzero - np.mean(sample_nonzero)
             label_nonzero = label_nonzero - np.mean(label_nonzero)
             tstat[i] = np.dot(sample_nonzero, label_nonzero)
@@ -282,7 +303,7 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
             reject = (pvals <= realcp)
 
     elif fdr_method == 'bhfdr' or fdr_method == \
-                       'filterBH' or fdr_method == 'gilbertBH':            
+                       'filterBH' or fdr_method == 'gilbertBH':
         t_star = np.array([t, ] * numperm).transpose()
         pvals = (np.sum(u >= t_star, axis=1) + 1) / (numperm + 1)
         reject = multipletests(pvals, alpha=alpha, method='fdr_bh')[0]
@@ -304,4 +325,5 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
     ret_reject[filtered_order] = reject
     ret_pvals[filtered_order] = pvals
     ret_tstat[filtered_order] = tstat
+    logger.debug('Rejected %d features' % np.sum(reject))
     return ret_reject, ret_tstat, ret_pvals
