@@ -11,7 +11,7 @@ from . import statistics
 
 
 # new fdr method
-def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
+def dsfdr(data, labels, transform_type='rank', method='meandiff',
           alpha=0.1, numperm=1000, fdr_method='dsfdr'):
     '''
     calculate the Discrete FDR for the data
