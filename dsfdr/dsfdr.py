@@ -27,11 +27,11 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
     transform_type : str or None
         transformation to apply to the data before caluculating
         the test statistic
-        'rankdata' : rank transfrom each OTU reads
-        'log2data' : calculate log2 for each OTU using minimal cutoff of 2
-        'normdata' : normalize the data to constant sum per samples
-        'binarydata' : convert to binary absence/presence
-        'clrdata' : clr transformation of data (after replacing 0 with 1)
+        'rank' : rank transfrom each OTU reads
+        'log' : calculate log2 for each OTU using minimal cutoff of 2
+        'normd' : normalize the data to constant sum per samples
+        'binary : convert to binary absence/presence
+        'clr' : clr transformation of data (after replacing 0 with 1)
          None : no transformation to perform
 
     method : str or function
