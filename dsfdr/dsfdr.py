@@ -16,7 +16,7 @@ basicConfig(format='%(levelname)s:%(message)s')
 
 
 # new fdr method
-def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
+def dsfdr(data, labels, transform_type='rank', method='meandiff',
           alpha=0.1, numperm=1000, fdr_method='dsfdr'):
     '''
     calculate the Discrete FDR for the data
@@ -32,11 +32,11 @@ def dsfdr(data, labels, transform_type='rankdata', method='meandiff',
     transform_type : str or None
         transformation to apply to the data before caluculating
         the test statistic
-        'rankdata' : rank transfrom each OTU reads
-        'log2data' : calculate log2 for each OTU using minimal cutoff of 2
-        'normdata' : normalize the data to constant sum per samples
-        'binarydata' : convert to binary absence/presence
-        'clrdata' : clr transformation of data (after replacing 0 with 1)
+        'rank' : rank transfrom each OTU reads
+        'log' : calculate log2 for each OTU using minimal cutoff of 2
+        'normd' : normalize the data to constant sum per samples
+        'binary : convert to binary absence/presence
+        'clr' : clr transformation of data (after replacing 0 with 1)
          None : no transformation to perform
 
     method : str or function
