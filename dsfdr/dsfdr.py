@@ -37,7 +37,7 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
         'norm' : normalize the data to constant sum per samples
         'binary : convert to binary absence/presence
         'clr' : clr transformation of data (after replacing 0 with 1)
-         None : no transformation to perform
+        'none' or None : no transformation to perform
 
     method : str or function
         the method to use for calculating test statistics:
@@ -51,7 +51,7 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
                             (numeric)
         'nonzeropearson' : pearson correlation only non-zero entries (numeric)
         function : use this function to calculate the test statistic
-        (input is data,labels, output is array of float)
+        (input is data, labels, output is array of float)
 
     alpha : float
         the desired FDR control level
@@ -148,16 +148,18 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
         data = transform.normdata(data)
     elif transform_type == 'clr':
         data = transform.clrdata(data)
+    elif transform_type == 'none':
+        pass
     elif transform_type is None:
-            pass
+        pass
     else:
         raise ValueError('transform type %s not supported' % transform_type)
 
     numbact = np.shape(data)[0]
     labels = labels.copy()
 
-    logger.debug('%d samples in group1' % np.sum(labels==0))
-    logger.debug('%d samples in group2' % np.sum(labels==1))
+    for i in np.unique(labels):
+        logger.debug('%d samples in group %d' % (np.sum(labels==i), i + 1))
 
     if method == 'meandiff':
         logger.debug('Using statistic meandiff')
