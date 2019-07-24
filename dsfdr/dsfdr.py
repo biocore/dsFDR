@@ -106,21 +106,21 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
         n1 = np.sum(labels == 1)
         for i in range(np.shape(data)[0]):
             # test if all values are identical, max p-val is 1 (need to filter)
-            if len(np.unique(data[i,:]))==1:
+            if len(np.unique(data[i, :])) == 1:
                 alpha_star.append(1)
                 continue
             # sort in acending order
-            cdat = np.sort(data[i,:])
+            cdat = np.sort(data[i, :])
             # sort in decending order
-            rdat = np.sort(data[i,:])[::-1]
+            rdat = np.sort(data[i, :])[::-1]
 
-            s1, p1 = scipy.stats.kruskal(cdat[:n0],cdat[n0:])
-            s2, p2 = scipy.stats.kruskal(rdat[:n0],rdat[n0:])
+            s1, p1 = scipy.stats.kruskal(cdat[:n0], cdat[n0:])
+            s2, p2 = scipy.stats.kruskal(rdat[:n0], rdat[n0:])
 
-            alpha_star.append(np.min([p1,p2]))
+            alpha_star.append(np.min([p1, p2]))
         # find the smallest K which is big enough for Bonferoni (that's how it's done in Gilbert)
         alpha_star = np.array(alpha_star)
-        for ck in np.arange(1,np.shape(data)[0]+1):
+        for ck in np.arange(1, np.shape(data)[0] + 1):
             num_ok = np.sum(alpha_star < alpha / ck)
             if num_ok <= ck:
                 break
@@ -159,7 +159,7 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
     labels = labels.copy()
 
     for i in np.unique(labels):
-        logger.debug('%d samples in group %d' % (np.sum(labels==i), i + 1))
+        logger.debug('%d samples in group %d' % (np.sum(labels == i), i + 1))
 
     if method == 'meandiff':
         logger.debug('Using statistic meandiff')
@@ -309,7 +309,6 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
         t_star = np.array([t, ] * numperm).transpose()
         pvals = (np.sum(u >= t_star, axis=1) + 1) / (numperm + 1)
         reject = multipletests(pvals, alpha=alpha, method='fdr_bh')[0]
-
 
     elif fdr_method == 'byfdr':
         t_star = np.array([t, ] * numperm).transpose()
