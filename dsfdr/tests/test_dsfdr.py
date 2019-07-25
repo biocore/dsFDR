@@ -74,11 +74,11 @@ class fdr_methodsTests(TestCase):
         np.testing.assert_array_equal(np.isnan(tstat), [False, False, True, True, False])
 
         # and check p-vals are as expected
-        np.testing.assert_array_equal(pval<0.1, [True, False, False, False, True])
+        np.testing.assert_array_equal(pval < 0.1, [True, False, False, False, True])
 
     def test_dsfdr_filterBH_simulation(self):
         # mix the simulated data so the rejects should be position 100:199
-        new_data = self.data_sim[np.hstack([np.arange(900,1000),np.arange(900)]), :]
+        new_data = self.data_sim[np.hstack([np.arange(900, 1000), np.arange(900)]), :]
         reject, tstat, pval = dsfdr.dsfdr(new_data, self.labels_sim,
                                           method='meandiff', transform_type=None,
                                           alpha=0.1, numperm=1000,
@@ -88,10 +88,11 @@ class fdr_methodsTests(TestCase):
 
         # test we control the FDR
         okpos = np.where(reject)[0]
-        self.assertLessEqual((np.sum((okpos < 100) | (okpos>199))/np.sum(reject)), 0.1)
+        self.assertLessEqual((np.sum((okpos < 100) | (okpos > 199)) / np.sum(reject)), 0.1)
 
         # test we pre-filtered a lot of features
         self.assertGreaterEqual(np.sum(np.isnan(tstat)), 400)
+
 
 if __name__ == '__main__':
     main()

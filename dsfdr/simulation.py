@@ -81,8 +81,8 @@ def simulatedat2(numsamples=5, numdiff=100, numc=100, numd=800,
 
     A = np.zeros([int(numdiff), 2 * numsamples])
     for i in range(int(numdiff)):
-        #mu_H = np.random.uniform(5, 6)
-        #mu_S = np.random.uniform(3, 4)
+        # mu_H = np.random.uniform(5, 6)
+        # mu_S = np.random.uniform(3, 4)
         mu_H = np.random.uniform(5, 5.5)
         mu_S = np.random.uniform(5.5, 5.7)
         h = np.random.normal(mu_H, sigma, numsamples)

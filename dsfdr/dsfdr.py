@@ -37,7 +37,7 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
         'norm' : normalize the data to constant sum per samples
         'binary : convert to binary absence/presence
         'clr' : clr transformation of data (after replacing 0 with 1)
-         None : no transformation to perform
+        'none' or None : no transformation to perform
 
     method : str or function
         the method to use for calculating test statistics:
@@ -51,7 +51,7 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
                             (numeric)
         'nonzeropearson' : pearson correlation only non-zero entries (numeric)
         function : use this function to calculate the test statistic
-        (input is data,labels, output is array of float)
+        (input is data, labels, output is array of float)
 
     alpha : float
         the desired FDR control level
@@ -106,21 +106,21 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
         n1 = np.sum(labels == 1)
         for i in range(np.shape(data)[0]):
             # test if all values are identical, max p-val is 1 (need to filter)
-            if len(np.unique(data[i,:]))==1:
+            if len(np.unique(data[i, :])) == 1:
                 alpha_star.append(1)
                 continue
             # sort in acending order
-            cdat = np.sort(data[i,:])
+            cdat = np.sort(data[i, :])
             # sort in decending order
-            rdat = np.sort(data[i,:])[::-1]
+            rdat = np.sort(data[i, :])[::-1]
 
-            s1, p1 = scipy.stats.kruskal(cdat[:n0],cdat[n0:])
-            s2, p2 = scipy.stats.kruskal(rdat[:n0],rdat[n0:])
+            s1, p1 = scipy.stats.kruskal(cdat[:n0], cdat[n0:])
+            s2, p2 = scipy.stats.kruskal(rdat[:n0], rdat[n0:])
 
-            alpha_star.append(np.min([p1,p2]))
+            alpha_star.append(np.min([p1, p2]))
         # find the smallest K which is big enough for Bonferoni (that's how it's done in Gilbert)
         alpha_star = np.array(alpha_star)
-        for ck in np.arange(1,np.shape(data)[0]+1):
+        for ck in np.arange(1, np.shape(data)[0] + 1):
             num_ok = np.sum(alpha_star < alpha / ck)
             if num_ok <= ck:
                 break
@@ -148,16 +148,18 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
         data = transform.normdata(data)
     elif transform_type == 'clr':
         data = transform.clrdata(data)
+    elif transform_type == 'none':
+        pass
     elif transform_type is None:
-            pass
+        pass
     else:
         raise ValueError('transform type %s not supported' % transform_type)
 
     numbact = np.shape(data)[0]
     labels = labels.copy()
 
-    logger.debug('%d samples in group1' % np.sum(labels==0))
-    logger.debug('%d samples in group2' % np.sum(labels==1))
+    for i in np.unique(labels):
+        logger.debug('%d samples in group %d' % (np.sum(labels == i), i + 1))
 
     if method == 'meandiff':
         logger.debug('Using statistic meandiff')
@@ -307,7 +309,6 @@ def dsfdr(data, labels, transform_type='rank', method='meandiff',
         t_star = np.array([t, ] * numperm).transpose()
         pvals = (np.sum(u >= t_star, axis=1) + 1) / (numperm + 1)
         reject = multipletests(pvals, alpha=alpha, method='fdr_bh')[0]
-
 
     elif fdr_method == 'byfdr':
         t_star = np.array([t, ] * numperm).transpose()

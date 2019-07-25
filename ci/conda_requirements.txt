@@ -5,3 +5,4 @@ matplotlib
 scikit-bio
 sphinx
 flake8
+nose
